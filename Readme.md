@@ -1,0 +1,1 @@
+go mod init "GITHUB URL" is same as npm init this creates package named in github repo when ever we want we can import 
