@@ -5,8 +5,15 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
+	"golang.org/x/mod/sumdb/storage"
 	"gorm.io/gorm"
 )
+
+type Book struct{
+	Author string `json:"author"`
+	Title  string `json:"title"`
+	Publisher string `json:"publisher"`
+}
 
 type Repository struct {
 	//DB is a pointer to gorm.DB
@@ -28,6 +35,12 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	
+	db,err:=storage.newConnection(config)
+	if err!=nil{
+		log.Fatal("Could not connect to the database",err)
+	}
+
 	r := Repository{
 		DB: db,
 	}
