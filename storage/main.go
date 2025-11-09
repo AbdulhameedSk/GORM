@@ -45,6 +45,9 @@ func (r *Repository) GetBooks(c *fiber.Ctx) error{
 	return c.Status(200).JSON(bookModels)
 }
 
+func (r *Repository) GetBookByID(c *fiber.Ctx) error {
+	id := c.Params("id")
+}
 
 func (r *Repository) SetupRoutes(app *fiber.App) {
 	api := app.Group("/api")
