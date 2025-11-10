@@ -3,7 +3,10 @@ package main
 import (
 	//For logging messages or errors to console
 	"log"
+	"os"
 
+	"github.com/AbdulhameedSk/GORM/models"
+	"github.com/AbdulhameedSk/GORM/storage"
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
 	"gorm.io/gorm"
@@ -35,18 +38,14 @@ func (r *Repository) CreateBooks(c *fiber.Ctx) error {
 	return c.Status(201).JSON(book)
 }
 
-func (r *Repository) GetBooks(c *fiber.Ctx) error{
-	bookModels : =&[]models.Book{}
+func (r *Repository) GetBooks(c *fiber.Ctx) error {
+	bookModels := &[]models.Books{}
 	err := r.DB.Find(bookModels).Error
 	if err != nil {
 		c.Status(500).JSON(fiber.Map{"error": "Could not retrieve books"})
 		return err
 	}
 	return c.Status(200).JSON(bookModels)
-}
-
-func (r *Repository) GetBookByID(c *fiber.Ctx) error {
-	id := c.Params("id")
 }
 
 func (r *Repository) SetupRoutes(app *fiber.App) {
@@ -60,12 +59,20 @@ func (r *Repository) SetupRoutes(app *fiber.App) {
 }
 
 func main() {
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatal(err)
+	if err := godotenv.Load(".env"); err != nil {
+		log.Println("No .env file found or error loading .env:", err)
 	}
 
-	db, err := storage.newConnection(config)
+	config := &storage.Config{
+		Host:     os.Getenv("DB_HOST"),
+		Port:     os.Getenv("DB_PORT"),
+		User:     os.Getenv("DB_USER"),
+		Password: os.Getenv("DB_PASSWORD"),
+		DBName:   os.Getenv("DB_NAME"),
+		SSLMode:  os.Getenv("DB_SSLMODE"),
+	}
+
+	db, err := storage.NewConnection(config)
 	if err != nil {
 		log.Fatal("Could not connect to the database", err)
 	}
@@ -76,5 +83,4 @@ func main() {
 	app := fiber.New()
 	r.SetupRoutes(app)
 	log.Fatal(app.Listen(":8080"))
-
 }
