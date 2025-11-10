@@ -54,7 +54,7 @@ func (r *Repository) SetupRoutes(app *fiber.App) {
 	api.DELETE("/Delete_books/:id", r.DeleteBooks)
 	api.GET("/Get_books/:id", r.GetBookByID)
 	api.GET("/books", r.GetBooks)
-	api.PUT("/Update_books/:id", r.UpdateBooks)
+	// api.PUT("/Update_books/:id", r.UpdateBooks)
 	// Additional routes can be added here
 }
 
