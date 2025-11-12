@@ -48,6 +48,17 @@ func (r *Repository) GetBooks(c *fiber.Ctx) error {
 	return c.Status(200).JSON(bookModels)
 }
 
+func (r *Repository) GetBookByID(c *fiber.Ctx) error {
+	id := c.Params("id")
+	bookModel := &models.Books{}
+	err := r.DB.First(bookModel, id).Error
+	if err != nil {
+		c.Status(404).JSON(fiber.Map{"error": "Book not found"})
+		return err
+	}
+	return c.Status(200).JSON(bookModel)
+}
+
 func (r *Repository) SetupRoutes(app *fiber.App) {
 	api := app.Group("/api")
 	api.POST("/Create_books", r.CreateBooks)
